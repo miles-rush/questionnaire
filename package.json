@@ -1,0 +1,25 @@
+{
+  "name": "questionnaire",
+  "version": "0.0.0",
+  "scripts": {
+    "dev": "vite",
+    "build": "vue-tsc --noEmit && vite build",
+    "serve": "vite preview"
+  },
+  "dependencies": {
+    "axios": "^0.21.4",
+    "element-plus": "^1.1.0-beta.9",
+    "recordrtc": "^5.6.2",
+    "timers": "^0.1.1",
+    "vue": "^3.2.6",
+    "vue-router": "^4.0.11"
+  },
+  "devDependencies": {
+    "@vitejs/plugin-vue": "^1.6.1",
+    "@vue/compiler-sfc": "^3.2.6",
+    "typescript": "^4.3.2",
+    "vite": "^2.5.4",
+    "vite-plugin-element-plus": "0.0.12",
+    "vue-tsc": "^0.2.2"
+  }
+}
