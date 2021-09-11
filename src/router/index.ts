@@ -11,7 +11,7 @@ const routes: Array<RouteRecordRaw> = [
 	name: 'Main',
 	component: () => import('../components/Main.vue')
   },
-  { path: '/', redirect: { name: 'Main' } }
+  { path: '/', redirect: { name: 'Home' } }
 ]
 
 const router = createRouter({
