@@ -4,6 +4,7 @@
 		  <template #header shadow="hover">
 		    <div class="card-header">
 		      <span>问卷系统</span>
+			  <el-button class="button" type="text" @click="baseInfoShow = true">信息查看</el-button>
 		    </div>
 		  </template>
 		  <el-row v-if="render">
@@ -12,13 +13,13 @@
 					<el-col :span="6">
 						<video playsinline src="" class="myCamera" id="myCamera" ref="myCamera"></video>
 					</el-col>
-					<el-col :span="6" :offset="6">
+					<!-- <el-col :span="6" :offset="6">
 						<el-descriptions border column="1" title="用户信息" size="medium" style="margin-top: 5px;">
-						  <el-descriptions-item label="姓名">田野</el-descriptions-item>
-						  <el-descriptions-item label="性别">男</el-descriptions-item>
-						  <el-descriptions-item label="年龄">15</el-descriptions-item>
+						  <el-descriptions-item label="姓名">{{ user.name }}</el-descriptions-item>
+						  <el-descriptions-item label="性别">{{ user.sex }}</el-descriptions-item>
+						  <el-descriptions-item label="年龄">{{ user.age }}</el-descriptions-item>
 						</el-descriptions>
-					</el-col>
+					</el-col> -->
 					
 				</el-row>
 		  	</el-col>
@@ -41,8 +42,8 @@
 			
 		  	<el-col :span="12" :offset="9">
 		  		<el-button v-if="!isStart" type="primary" round @click="start" style="margin-top: 40px;margin-left: 45px;">开 始 问 卷</el-button>
-		  		<el-button v-if="isStart" type="success" round style="margin-top: 40px;margin-right: 80px;" @click="yes()">是</el-button>
-				<el-button v-if="isStart" type="danger" round style="margin-top: 40px;" @click="no()">否</el-button>
+		  		<el-button v-if="isStart" type="success" round style="margin-top: 40px;margin-right: 80px;" @click="yes()" :disabled="submiting">是</el-button>
+				<el-button v-if="isStart" type="danger" round style="margin-top: 40px;" @click="no()" :disabled="submiting">否</el-button>
 		  	</el-col>
 			
 			<el-row>
@@ -54,7 +55,7 @@
 					      <span>2.每道题目只有一次选择机会</span>
 						  <el-divider></el-divider>
 						  <span>3.完成所有问卷内容后自动提交，请不要立马关闭浏览器</span>
-						  <el-divider>祝你好运</el-divider>
+						  <el-divider>出现报错请联系管理员</el-divider>
 					    </div>
 				</el-col>
 			</el-row>
@@ -64,10 +65,46 @@
 		
 	</div>
 	
+	<el-dialog
+	  title="数据上传中"
+	  v-model="dialogVisible"
+	  width="40%"
+	  center
+	>
+	  <span>
+		  <el-icon class="is-loading"><loading /></el-icon>
+		  请不要立马关闭浏览器,等待数据上载和下载,确认数据保存后关闭。</span>
+	  <template #footer>
+	    <span class="dialog-footer">
+	      <el-button @click="dialogVisible = false">取 消</el-button>
+	      <el-button type="primary" @click="dialogVisible = false">确 定</el-button>
+	    </span>
+	  </template>
+	</el-dialog>
+	
+	<el-dialog
+	  title="个人信息"
+	  v-model="baseInfoShow"
+	  width="30%"
+	  center
+	>
+	  <el-descriptions border column="1" title="" size="medium" style="margin-top: 5px;">
+	    <el-descriptions-item label="姓名">{{ user.name }}</el-descriptions-item>
+	    <el-descriptions-item label="性别">{{ user.sex }}</el-descriptions-item>
+	    <el-descriptions-item label="年龄">{{ user.age }}</el-descriptions-item>
+	  </el-descriptions>
+	  <template #footer>
+	    <span class="dialog-footer">
+	      <el-button @click="baseInfoShow = false">取 消</el-button>
+	      <el-button type="primary" @click="baseInfoShow = false">确 定</el-button>
+	    </span>
+	  </template>
+	</el-dialog>
 	
 </template>
 
 <script>
+	import axios from 'axios'
 	import RecordRTC from 'recordrtc';
 	export default {
 		data() {
@@ -82,41 +119,47 @@
 				nowq: 0,
 				nowQt: '',
 				// 题目数组
-				qList:[
-					'1.你有没有一段时间几乎每天的大部分时间都感到忧郁或情绪低落？',
-					'2.是否感到自己的精力下降、活动减慢？',
-					'3.是否容易哭泣？',
-					'4.是否感到孤独？',
-					'5.是否感到苦闷？',
-					'6.是否对事物不感兴趣？',
-					'7.是否经常责怪自己？',
-					// 进阶
-					'8.您有没有一段时间几乎每天的大部分时间都感到忧郁或情绪低落？',
-					'9.对于平日所喜欢的事情，您是否失去了兴趣或愉快感？',
-					'10.近来您进食比平时多或者比平时少吗？',
-					'11.有没有入睡困难、觉醒频繁、维持睡眠困难、早醒或睡眠过多吗？',
-					'12.您是否烦躁不安以至于不能静坐？',
-					'12.您是否讲话或行动比平时来得慢？',
-					'14.是不是整天觉得疲倦？',
-					'15.您是否对自己做过的或没有做过的事情感到有罪？',
-					'16.您有思考或集中注意力方面的问题吗？',
-					'17.是否事情糟糕得以至于您常常想到死或觉得也许死了更好？您想到过伤害自己吗？',
-					'18.事情糟糕得以至于您常常想到死或觉得也许死了更好，这种状态使您难于工作、做家务或与其他人交往吗？',
-					'19.事情糟糕得以至于您常常想到死或觉得也许死了更好，这种状态持续有两个星期了吗？'
-				],
+				qList:[],
 				// 最后题目的编号
 				qMax: 0,
 				resultList:[],
-				timeList:[]
+				timeList:[],
+				baseId: null,
+				user: {
+					name: null,
+					age: null,
+					sex: null,
+				},
+				// 提交的信息
+				form: {
+					baseId: null,
+					results: null,
+					times: null,
+					videoName: null,
+				},
+				submiting: false,
+				dialogVisible: false,
+				localStream: null,
+				baseInfoShow: false,
 			}
+		},
+		created() {
+			this.baseId = this.$route.query.baseId
+			this.init()
 		},
 		mounted() {
 			let that = this
 			let constraints = {
 				audio: true,
 				video: {
-					width: this.CurrentWidth / 2,
-					height: this.CurrentHeight / 2
+					// width: 1280, height: 720 
+					// width: this.CurrentWidth / 2,
+					// height: this.CurrentHeight / 2,
+					frameRate: {
+					    ideal: 60,
+					    max: 60,
+					    min: 30
+					}
 					// width: { min: 1024, ideal: 1280, max: 1920 },
 					// height: { min: 776, ideal: 720, max: 1080 }
 				}
@@ -127,20 +170,57 @@
 					console.log('开启摄像头')
 					this.video = this.$refs.myCamera
 					this.video.srcObject = mediaStream
-					this.recorder = RecordRTC(mediaStream)
+					// 视频参数设置
+					let options = {
+					    mimeType: 'video/webm',
+					    video: {
+					        width: 1920,
+					        height: 1080
+					    },
+					    bitsPerSecond: 51200000,
+					    frameRate: 60
+					};
+					this.recorder = RecordRTC(mediaStream, options)
 					this.video.onloadedmetadata = e => {
 						this.video.play()
 						
 					}
+					
+					this.localStream = mediaStream
 					that.$message.success('摄像头开启成功');
 					// this.recorder.startRecording()
+					
 			})
-			
-			// 问卷显示部分初始化
-			this.nowQt = this.qList[0]
-			this.qMax = this.qList.length - 1
+			// .catch(function(err){
+			// 	that.$message.error('摄像头开启失败')
+			// })
 		},
 		methods: {
+			// 从服务器加载题目
+			async init() {
+				const result = await axios.get(this.$url + 'base/survey')
+				console.log(result)
+				if(result.data.code == 200) {
+					this.qList = result.data.data
+					// 问卷显示部分初始化
+					this.nowQt = this.qList[0]
+					this.qMax = this.qList.length - 1
+					// 加载用户信息
+					const userResult = await axios.get(this.$url + 'base/get/' + this.baseId)
+					console.log(userResult)
+					if(userResult.data.code == 200) {
+						this.user.name = userResult.data.data.name
+						this.user.sex = userResult.data.data.sex
+						this.user.age = userResult.data.data.age
+						
+					}else {
+						this.$message.error('用户信息加载失败');
+					}
+				}else {
+					this.$message.error('问卷内容下载失败');
+				}
+				
+			},
 			start() {
 				
 				//document.getElementById('myCamera').style.height = '50%'
@@ -149,7 +229,7 @@
 				this.recorder.startRecording()
 				this.isStart = true
 				// document.getElementById('question').style.marginBottom = '' + this.height +'px'
-				that.$message.success('开始问卷内容');
+				this.$message.success('开始问卷内容');
 			},
 			yes(){
 				this.next(1)
@@ -161,6 +241,16 @@
 				if(this.nowq == this.qMax) {
 					// 做完了
 					this.$message.warning('最后一题');
+					// 提交数据
+					// 禁用按钮
+					this.submiting = true
+					this.dialogVisible = true
+					// 关闭摄像头
+					this.video.pause()
+					this.localStream.getTracks().forEach( (track) => {
+						track.stop();
+					});
+					this.submit()
 					return
 				}
 				// 记录答案
@@ -174,6 +264,33 @@
 				
 				console.log('resultList:', this.resultList)
 				console.log('timeList:', this.timeList)
+			},
+			async submit() {
+				let results = this.resultList.join('-')
+				let times = this.timeList.join('-')
+				this.form.baseId = this.baseId
+				this.form.results = results
+				this.form.times = times
+				this.form.videoName = new Date().getTime()
+				
+				let fileName = null
+				
+				this.recorder.stopRecording(() => {
+					// console.log(this.video.src)
+					const downloadLink = document.createElement('a') 
+					downloadLink.href = URL.createObjectURL(this.recorder.getBlob())
+					// 下面是定义文件名字
+					// fileName = new Date().getTime() + ''
+					downloadLink.download = `${this.form.videoName}`
+					// 点击a标签
+					downloadLink.click()
+				})
+				
+				
+				const result = await axios.post(this.$url + 'base/submit', this.form)
+				if(result.data.code == 200) {
+					this.$message.success('提交成功');
+				}
 			},
 			close() {
 				this.recorder.stopRecording(() => {

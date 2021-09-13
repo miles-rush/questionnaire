@@ -10,20 +10,20 @@
 			  </template>
 			<el-row>
 				<el-col :span="12" :offset="5">
-					<el-form ref="form" :model="form" label-position="right" label-width="140px">
-						<el-form-item label="姓名">
+					<el-form ref="baseForm" :rules="rules" :model="form" label-position="right" label-width="140px">
+						<el-form-item label="姓名" prop="name">
 							<el-input v-model="form.name"></el-input>
 						</el-form-item>
-						 <el-form-item label="性别">
-						    <el-radio-group v-model="form.sex">
+						 <el-form-item label="性别" prop="sex">
+						    <el-radio-group v-model="form.sex" type="sex">
 						      <el-radio label="男"></el-radio>
 						      <el-radio label="女"></el-radio>
 						    </el-radio-group>
 						  </el-form-item>
-						<el-form-item label="年龄">
-							<el-input v-model="form.age"></el-input>
+						<el-form-item label="年龄" prop="age">
+							<el-input v-model.number="form.age"></el-input>
 						</el-form-item>
-						<el-form-item label="您是什么文化程度?">
+						<el-form-item label="您是什么文化程度?" prop="culture">
 							<el-select v-model="form.culture" placeholder="请选择您的文化程度">
 							    <el-option
 							      v-for="item in cultureList"
@@ -34,7 +34,7 @@
 							    </el-option>
 							  </el-select>
 						</el-form-item>
-						<el-form-item label="您的婚姻状况如何?">
+						<el-form-item label="您的婚姻状况如何?" prop="marriage">
 							<el-select v-model="form.marriage" placeholder="请选择您的婚姻状况">
 							    <el-option
 							      v-for="item in marriageList"
@@ -45,7 +45,7 @@
 							    </el-option>
 							  </el-select>
 						</el-form-item>
-						<el-form-item label="您和谁住在一起?">
+						<el-form-item label="您和谁住在一起?" prop="live">
 							<el-select v-model="form.live" placeholder="您和谁住在一起">
 							    <el-option
 							      v-for="item in liveList"
@@ -56,7 +56,7 @@
 							    </el-option>
 							  </el-select>
 						</el-form-item>
-						<el-form-item label="您现在做什么工作?">
+						<el-form-item label="您现在做什么工作?" prop="work">
 							<el-select v-model="form.work" placeholder="您现在做什么工作">
 							    <el-option
 							      v-for="item in workList"
@@ -93,6 +93,7 @@
 </template>
 
 <script>
+	import axios from 'axios'
 	export default {
 		data() {
 			return {
@@ -242,22 +243,60 @@
 					},		
 				],
 				dialogVisible: false,
+				baseId: null,
+				rules: {
+					name: [{ required: true, message: '请输入姓名', trigger: 'blur' },],
+					sex: [{ required: true, message: '请选择性别', trigger: 'change' },],
+					culture: [{ required: true, message: '请选择一项内容', trigger: 'change' },],
+					live: [{ required: true, message: '请选择一项内容', trigger: 'change' },],
+					work: [{ required: true, message: '请选择一项内容', trigger: 'change' },],
+					marriage: [{ required: true, message: '请选择一项内容', trigger: 'change' },],
+					age: [ { required: true, message: '年龄不能为空'},
+					       { type: 'number', message: '年龄必须为数字值'},],
+				}
 			}
 		},
 		methods:{
 			// 提交基础信息
-			onSubmit() {
-				
+			async onSubmit() {
+			   this.$refs['baseForm'].validate((valid) => {
+				  if (valid) {
+					this.init()
+				  } else {
+					this.$message.error('表单验证失败');
+					return false
+				  }
+				})
+			},
+			async init() {
+				const result = await axios.post(
+				        this.$url + "base/init",
+				        this.form
+				 );
+				 console.log(result)
+				 if(result.data.code == 200) {
+					this.baseId = result.data.data
+					// 跳转
+					this.$router.push({
+						path:"main",
+						query:{
+							baseId: this.baseId
+						}
+					})
+				 }else{
+					 this.$message.error('提交失败,请重试');
+				 }
 			},
 			onReset() {
-				let that = this
-				that.form.name = ''
-				that.form.sex = ''
-				that.form.age = ''
-				that.form.culture = ''
-				that.form.work = ''
-				that.form.live = ''
-				that.form.marriage = ''
+				this.$refs['baseForm'].resetFields()
+				// let that = this
+				// that.form.name = ''
+				// that.form.sex = ''
+				// that.form.age = ''
+				// that.form.culture = ''
+				// that.form.work = ''
+				// that.form.live = ''
+				// that.form.marriage = ''
 				this.$message.success('重置成功');
 			}
 		}
