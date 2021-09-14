@@ -5,7 +5,7 @@
 			<template #header>
 			    <div class="card-header">
 			      <span>基础信息完善</span>
-			      <el-button class="button" type="text" @click="dialogVisible = true">问题反馈</el-button>
+			      <el-button class="button" type="text" @click="dialogVisible = true">使用说明</el-button>
 			    </div>
 			  </template>
 			<el-row>
@@ -78,11 +78,23 @@
 	</div>
 	
 	<el-dialog
-	  title="问题反馈"
+	  title="使用说明"
 	  v-model="dialogVisible"
-	  width="30%"
+	  width="50%"
 	>
-	  <span>在使用中遇到问题,请联系计算机楼A513实验室</span>
+	  
+	  <div>在使用前请先按照如下步骤进行设置</div>
+	  <div>1.建议使用谷歌浏览器</div>
+	  <div>2.在谷歌浏览器地址栏输入</div>
+	  <div>chrome://flags/#unsafely-treat-insecure-origin-as-secure</div>
+	  <div>3.回车跳转到设置页面</div>
+	  <div>
+		  <img src="../assets/cz.png" width="600"/>
+		  <!-- <el-image src="../assets/cz.png"></el-image> -->
+	  </div>
+	  <div>4.如图位置添加:http://81.69.223.15:7913/</div>
+	  <div>5.重启浏览器完成设置</div>
+	  <div>TIP:在使用中遇到其他问题,请联系计算机楼A513实验室</div>
 	  <template #footer>
 	    <span class="dialog-footer">
 	      <el-button @click="dialogVisible = false">取 消</el-button>
