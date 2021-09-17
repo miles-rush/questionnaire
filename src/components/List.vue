@@ -7,20 +7,21 @@
 						<span>帮助面板</span>
 						<!-- <el-button class="button" type="text" @click="dialogVisible = true">使用说明</el-button> -->
 					</div>
-		
+
 				</template>
 				<el-collapse>
 					<el-collapse-item title="工具包下载地址1" name="1">
-						<el-link icon="el-icon-link" type="primary" href="https://wwr.lanzoui.com/iWpGyu1hu0d" target="_blank">蓝奏云下载地址</el-link>
+						<el-link icon="el-icon-link" type="primary" :href="url" target="_blank">蓝奏云下载地址</el-link>
 						<div>
 							Time you enjoy wasting, is not wasted.
 						</div>
 						<div>
-							The pessimist sees difficulty in every opportunity. The optimist sees the opportunity in every idfficulty.
+							The pessimist sees difficulty in every opportunity. The optimist sees the opportunity in
+							every idfficulty.
 						</div>
 					</el-collapse-item>
 					<el-collapse-item title="工具包下载地址2" name="2">
-						<el-link icon="el-icon-paperclip" type="success" href="https://wwr.lanzoui.com/iWpGyu1hu0d" target="_blank">备用下载地址</el-link>
+						<el-link icon="el-icon-paperclip" type="success" :href="url" target="_blank">备用下载地址</el-link>
 						<div>
 							But every ends marks a new begining.
 						</div>
@@ -29,16 +30,18 @@
 						</div>
 					</el-collapse-item>
 					<el-collapse-item title="工具包下载地址3" name="3">
-						<el-link icon="el-icon-key" type="warning" href="https://wwr.lanzoui.com/iWpGyu1hu0d" target="_blank">备用下载地址</el-link>
+						<el-link icon="el-icon-key" type="warning" :href="url" target="_blank">备用下载地址</el-link>
 						<div>
-							When you have eliminated the impossible , whatever remains, however improbable, must be the truth.
+							When you have eliminated the impossible , whatever remains, however improbable, must be the
+							truth.
 						</div>
 						<div>
-							A man is not old as long as he is seeking something. A man is not old until regrets take the place of dreams.
+							A man is not old as long as he is seeking something. A man is not old until regrets take the
+							place of dreams.
 						</div>
 					</el-collapse-item>
 					<el-collapse-item title="工具包下载地址4" name="4">
-						<el-link icon="el-icon-sugar" type="danger" href="https://wwr.lanzoui.com/iWpGyu1hu0d" target="_blank">备用下载地址</el-link>
+						<el-link icon="el-icon-sugar" type="danger" :href="url" target="_blank">备用下载地址</el-link>
 						<div>
 							Life is painting a picture, not doing a sum.
 						</div>
@@ -54,41 +57,59 @@
 				<el-col :offset="10"><span v-on:dblclick="dialogVisible = true">Created by KRG ©2021</span></el-col>
 			</el-row>
 		</el-footer>
-		
+
 	</el-container>
-	<el-dialog
-	  title="开发信息"
-	  v-model="dialogVisible"
-	  width="50%"
-	>
-	  <div style="text-align: center;align-items: center;">
-		  <div>
-		  		<!-- <img src="../assets/cz.png" width="600"/> -->
-		  		<el-image src="https://portrait.gitee.com/uploads/avatars/user/513/1540872_KingRainGrey_1612268762.png!avatar200"></el-image>
-		  </div>
-		  <div>KingRainGrey、</div>
-		  <div>~</div>
-		  <div><el-link type="primary" href="https://www.cnblogs.com/KingRainGrey/" target="_blank">我的博客</el-link></div>
-		  <div><el-link type="success" href="https://github.com/miles-rush" target="_blank">我的Github</el-link></div>
-		  
-		  
-	  </div>
-	  
-	  <template #footer>
-	    <span class="dialog-footer">
-	      <el-button @click="dialogVisible = false">取 消</el-button>
-	      <el-button type="primary" @click="dialogVisible = false">确 定</el-button>
-	    </span>
-	  </template>
+	<el-dialog title="开发信息" v-model="dialogVisible" width="50%">
+		<div style="text-align: center;align-items: center;">
+			<div>
+				<!-- <img src="../assets/cz.png" width="600"/> -->
+				<el-image
+					src="https://portrait.gitee.com/uploads/avatars/user/513/1540872_KingRainGrey_1612268762.png!avatar200">
+				</el-image>
+			</div>
+			<div>KingRainGrey、</div>
+			<div>~</div>
+			<div>
+				<el-link type="primary" href="https://mirrormoon.top/#/" target="_blank">个人主页</el-link>
+			</div>
+
+
+
+		</div>
+
+		<template #footer>
+			<span class="dialog-footer">
+				<el-button @click="dialogVisible = false">取 消</el-button>
+				<el-button type="primary" @click="dialogVisible = false">确 定</el-button>
+			</span>
+		</template>
 	</el-dialog>
-	
+
 </template>
 
 <script>
+	import axios from 'axios'
 	export default {
 		data() {
 			return {
 				dialogVisible: false,
+				url: 'https://wwr.lanzoui.com/iN0tRu4wxwb'
+			}
+		},
+		created() {
+			this.getUrL()
+		},
+		methods: {
+			// 获取下载地址
+			async getUrL() {
+				const result = await axios.get(
+					this.$url + "base/url");
+				console.log(result)
+				if (result.data.code == 200) {
+					this.url = result.data.data.content
+				} else {
+					this.$message.error('下载地址获取失败');
+				}
 			}
 		}
 	}

@@ -27,7 +27,7 @@ import {Loading} from '@element-plus/icons'
 
 const app = createApp(App)
 
-app.config.globalProperties.$url = 'http://81.69.223.15:7945/'
+app.config.globalProperties.$url = 'https://www.mirrormoon.top:7945/'
 
 app.component('Loading', Loading)
 
