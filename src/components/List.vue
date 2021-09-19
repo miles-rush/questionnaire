@@ -63,8 +63,8 @@
 		<div style="text-align: center;align-items: center;">
 			<div>
 				<!-- <img src="../assets/cz.png" width="600"/> -->
-				<el-image
-					src="https://portrait.gitee.com/uploads/avatars/user/513/1540872_KingRainGrey_1612268762.png!avatar200">
+				<el-image style="width: 150px;"
+					src="https://cdn.jsdelivr.net/gh/miles-rush/yoi/2021/img/txhmin.jpg">
 				</el-image>
 			</div>
 			<div>KingRainGrey、</div>
