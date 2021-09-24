@@ -64,7 +64,7 @@
 			<div>
 				<!-- <img src="../assets/cz.png" width="600"/> -->
 				<el-image style="width: 150px;"
-					src="https://cdn.jsdelivr.net/gh/miles-rush/yoi/2021/img/txhmin.jpg">
+					src="https://cdn.jsdelivr.net/gh/miles-rush/yoi/2021/img/cover.jpg">
 				</el-image>
 			</div>
 			<div>KingRainGrey、</div>

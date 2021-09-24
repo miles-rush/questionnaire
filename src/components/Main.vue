@@ -122,8 +122,12 @@
 				qList:[],
 				// 最后题目的编号
 				qMax: 0,
+				// 存放结果的数组
 				resultList:[],
+				// 存放时间的数组
 				timeList:[],
+				// 存放题号的数组
+				itemList:[]
 				baseId: null,
 				user: {
 					name: null,
