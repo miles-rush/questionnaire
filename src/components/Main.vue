@@ -240,6 +240,9 @@
 				this.isStart = true
 				// document.getElementById('question').style.marginBottom = '' + this.height +'px'
 				this.$message.success('开始问卷内容');
+				// 记录开始时间
+				let time = Date.now()
+				this.timeList.push(time)
 			},
 			yes() {
 				this.next(1)
@@ -299,8 +302,6 @@
 					//跳过下一道题目的逻辑
 					// 标识turn = 1 this.turn为假:前面所有的题目都选了否 属于同一问卷
 				} while (this.nowQt.turn == 1 && this.turn == false && this.nowType == this.nowQt.type)
-
-
 
 
 				console.log('resultList:', this.resultList)
